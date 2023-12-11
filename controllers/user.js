@@ -2,8 +2,15 @@ const { response } = require("express");
 
 
 const getUsers = (req, res = response) => {
+    const { q, name = 'no name', apiKey, limit = 10, offset = 0 } = req.query;
+
     res.json({
-        msg: 'get API - controller'
+        msg: 'get API - controller',
+        q,
+        name,
+        apiKey,
+        limit,
+        offset
     });
 }
 
@@ -18,14 +25,20 @@ const createUser = (req, res = response) => {
 }
 
 const updateUser = (req, res = response) => {
+    const id = req.params.id;
+
     res.json({
-        msg: 'put API - controller'
+        msg: 'put API - controller',
+        id
     });
 }
 
 const deleteUser = (req, res = response) => {
+    const id = req.params.id;
+
     res.json({
-        msg: 'delete API - controller'
+        msg: 'delete API - controller',
+        id
     });
 }
 

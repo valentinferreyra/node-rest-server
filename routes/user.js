@@ -8,10 +8,10 @@ const router = Router();
 
 router.get('/', getUsers);
 
-router.put('/', updateUser);
+router.put('/:id', updateUser);
 
 router.post('/', createUser);
 
-router.delete('/', deleteUser);
+router.delete('/:id', deleteUser);
 
 module.exports = router;
