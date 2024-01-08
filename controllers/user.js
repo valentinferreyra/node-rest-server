@@ -5,9 +5,21 @@ const bcryptjs = require('bcryptjs');
 const getUsers = async(req, res = response) => {
     const { limit = 5, offset = 0 } = req.query;
 
-    const users = await User.find().skip(offset).limit(limit);
+    if (isNaN(limit) || isNaN(offset)) {
+        return res.status(400).json({
+            msg: 'limit and offset must be numbers'
+        });
+    }
+
+    const [ total, users ] = await Promise.all([
+        User.countDocuments({ isActive: true }),
+        User.find({ isActive: true })
+            .skip(Number(offset))
+            .limit(Number(limit))
+    ]);
 
     res.json({
+        total,
         users
     });
 }
@@ -43,12 +55,13 @@ const updateUser = async(req, res = response) => {
     });
 }
 
-const deleteUser = (req, res = response) => {
+const deleteUser = async(req, res = response) => {
     const id = req.params.id;
 
+    const user = await User.findByIdAndUpdate(id, { isActive: false });
+
     res.json({
-        msg: 'delete API - controller',
-        id
+        msg: `user ${user.name} deleted`
     });
 }
 
