@@ -9,7 +9,7 @@ const isValidRole = async (role = '') => {
 }
 
 const existsEmail =  async (email = '') => {
-    await User.findOne( { email } )
+    const existsEmail = await User.findOne( { email } )
     if (existsEmail) {
         throw new Error(`email ${email} is already registered in the database`);
     }

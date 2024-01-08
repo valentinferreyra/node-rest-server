@@ -2,16 +2,13 @@ const { response } = require("express");
 const User  = require('../models/user');
 const bcryptjs = require('bcryptjs');
 
-const getUsers = (req, res = response) => {
-    const { q, name = 'no name', apiKey, limit = 10, offset = 0 } = req.query;
+const getUsers = async(req, res = response) => {
+    const { limit = 5, offset = 0 } = req.query;
+
+    const users = await User.find().skip(offset).limit(limit);
 
     res.json({
-        msg: 'get API - controller',
-        q,
-        name,
-        apiKey,
-        limit,
-        offset
+        users
     });
 }
 
