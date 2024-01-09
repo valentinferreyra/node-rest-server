@@ -57,11 +57,12 @@ const updateUser = async(req, res = response) => {
 
 const deleteUser = async(req, res = response) => {
     const id = req.params.id;
-
     const user = await User.findByIdAndUpdate(id, { isActive: false });
+    const authenticatedUser = req.authenticatedUser;
 
     res.json({
-        msg: `user ${user.name} deleted`
+        msg: `user ${user.name} deleted`,
+        authenticatedUser,
     });
 }
 
