@@ -50,16 +50,40 @@ const googleSignIn = async(req, res = response) => {
     const { id_token } = req.body;
 
     try {
-        const googleUser = await googleVerify(id_token);
-        console.log(googleUser);
+        const { email, name, img } = await googleVerify(id_token);
+
+        let user = await User.findOne({ email });
+        if (!user) {
+            const data = {
+                name, 
+                email,
+                password: 'google-password',
+                img,
+                createdFromGoogle: true,
+                role: 'USER_ROLE'
+            }
+
+            user = new User(data);
+            await user.save();
+        }
+
+        if (!user.isActive) {
+            return res.status(401).json({
+                msg: 'user is not active. contact the administrator'
+            });
+        }
+
+        const token = await generateJWT(user.id);
 
         res.json({
-            msg: 'id token received successfully',
-            id_token
+            user,
+            token
         })
+
     } catch (error) {
-        json.status(400).json({
-            msg: 'id token is not valid'
+        console.log(error)
+        res.status(400).json({
+           msg: 'google token is not valid'
         });
     }
 }
